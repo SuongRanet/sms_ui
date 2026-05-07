@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+* {
+    font-family: kanit, sans-serif;
+}
+
+:root {
+    /* Main background */
+    --color-primary-blue: #1f3a8a;
+    /* Use for: navbar, headings, footer */
+    --color-gold-accent: #f59e0b;
+    /* Use for: buttons, highlights, icons */
+    --color-light-blue: #e0f2fe;
+    /* Background sections, cards */
+    --color-dark-text: #1f2937;
+    /* Text color (instead of pure black) */
+    --color-gray-bg: #f3f4f6;
+    /* Section backgrounds */
+    --color-white1: #ffffff;
+}
+
+html.dark {
+    /* Main background */
+    --color-primary-blue: #3b82f6;
+    /* Use for: navbar, headings, footer */
+    --color-gold-accent: #fbbf24;
+    /* Use for: buttons, highlights, icons */
+    --color-light-blue: #1e3a8a;
+    /* Background sections, cards */
+    --color-dark-text: #e5e7eb;
+    /* Text color (instead of pure black) */
+    --color-gray-bg: #111827;
+    /* Section backgrounds */
+    --color-white1: #020617;
+}
+
+@theme {
+    /* Main background */
+    --color-primary-blue: var(--color-primary-blue);
+    /* Use for: navbar, headings, footer */
+    --color-gold-accent: var(--color-gold-accent);
+    /* Use for: buttons, highlights, icons */
+    --color-light-blue: var(--color-light-blue);
+    /* Background sections, cards */
+    --color-dark-text: var(--color-dark-text);
+    /* Text color (instead of pure black) */
+    --color-gray-bg: var(--color-gray-bg);
+    /* Section backgrounds */
+    --color-white1: var(--color-white1);
+}
+
+@layer base {
+    body {
+        color: var(--color-dark-text);
+        background-color: var(--color-gray-bg);
+    }
+
+    .inputLog {
+        outline: solid 3px var(--color-gray-bg);
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+    }
+    @media screen and (min-width: 768px) {
+        .inputLog {
+            padding: 0.5rem; /* tablet */
+        }
+    }
+
+    @media screen and (min-width: 1024px) {
+    }
+}

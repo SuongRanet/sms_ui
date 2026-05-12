@@ -2,6 +2,7 @@
 import Dialog from "./Dialog";
 import Setting from "../Setting";
 import { useState } from "react";
+import cookie from "cookiejs";
 import serverRest from "../../services/axios";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../stores/useAuthStore";
@@ -15,6 +16,7 @@ const Dropdown = () => {
 
     const handleLogout = async () => {
         logout();
+        cookie.clear("accessToken");
         try {
             // Perform any additional cleanup if necessary
             const response = await serverRest.post("/api/v1/auth/logout");

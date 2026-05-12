@@ -1,4 +1,5 @@
 //-Path: "\vite\src\components\Providers.jsx"
+import { Leva } from "leva";
 import { useEffect } from "react";
 import useThemeStore from "../../stores/useThemeStore";
 
@@ -11,7 +12,12 @@ function Providers({ children }) {
         else html.classList.remove("dark");
     }, [theme]);
 
-    return <>{children}</>;
+    return (
+        <>
+            <Leva hidden />
+            {children}
+        </>
+    );
 }
 
 export default Providers;

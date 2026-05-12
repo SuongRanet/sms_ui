@@ -9,12 +9,12 @@ const TotalCard = ({ title, value, type, icon: Icon }) => {
     };
 
     return (
-        <div className="bg-white1 shadow-sm rounded-lg py-4 md:py-6 p-3 md:p-4 flex gap-3 md:gap-4">
+        <div className="bg-white1 shadow-sm rounded-lg py-4 md:py-6 p-3 md:p-3 flex gap-3 md:gap-4">
             <div className="w-[25%] flex items-center justify-center">
                 <div
-                    className={`flex items-center justify-center ${colors[type]} rounded-full h-10 w-10 md:h-13 md:w-13`}
+                    className={`flex items-center justify-center ${colors[type]} rounded-full h-10 w-10 `}
                 >
-                    <Icon className="h-5 w-5 md:h-6 md:w-6" />
+                    <Icon className="h-5 w-5 md:h-5 md:w-5" />
                 </div>
             </div>
             <div>

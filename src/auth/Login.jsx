@@ -88,7 +88,7 @@ export const Login = () => {
                         <input
                             type="text"
                             id="username"
-                            placeholder="Enter your email or username"
+                            placeholder="Example@gmail.com"
                             className="inputLog"
                             onChange={(e) => {
                                 setUsername(e.target.value);

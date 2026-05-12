@@ -27,6 +27,9 @@ const App = () => {
         <button onClick={() => setTheme("dark")}>dark</button>
         <button onClick={() => setTheme("light")}>light</button>
       </div>
+
+      
+
     </div>
   );
 };

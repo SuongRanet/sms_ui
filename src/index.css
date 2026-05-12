@@ -52,6 +52,10 @@ html.dark {
 }
 
 @layer base {
+    ::-webkit-scrollbar {
+        @apply w-0 h-0;
+    }
+
     body {
         color: var(--color-dark-text);
         background-color: var(--color-gray-bg);

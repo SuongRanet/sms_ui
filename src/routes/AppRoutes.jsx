@@ -15,11 +15,28 @@ const ProtectedRoute = ({ children }) => {
     return children;
 };
 
+const AuthedRoute = ({ children }) => {
+    const accessToken = cookie.get("accessToken");
+    const { isAuthenticated } = useAuthStore();
+
+    if (accessToken && isAuthenticated)
+        return <Navigate to="/dashboard" replace />;
+
+    return children;
+};
+
 export default function AppRoutes() {
     return (
         <Routes>
             {/* Public */}
-            <Route path="/" element={<Login />} />
+            <Route
+                path="/"
+                element={
+                    <AuthedRoute>
+                        <Login />
+                    </AuthedRoute>
+                }
+            />
 
             {/* Protected */}
             <Route

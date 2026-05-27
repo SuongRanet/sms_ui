@@ -1,9 +1,8 @@
 @import "tailwindcss";
-
 @variant dark (&:where(.dark, .dark *));
 
 * {
-    font-family: kanit, sans-serif;
+    font-family: "Raleway", sans-serif;
 }
 
 :root {
@@ -14,7 +13,7 @@
     /* Use for: buttons, highlights, icons */
     --color-light-blue: #e0f2fe;
     /* Background sections, cards */
-    --color-dark-text: #1f2937;
+    --color-dark-text: #271111;
     /* Text color (instead of pure black) */
     --color-gray-bg: #f3f4f6;
     /* Section backgrounds */
@@ -29,7 +28,7 @@ html.dark {
     /* Use for: buttons, highlights, icons */
     --color-light-blue: #1e3a8a;
     /* Background sections, cards */
-    --color-dark-text: #e5e7eb;
+    --color-dark-text: #f9fafb;
     /* Text color (instead of pure black) */
     --color-gray-bg: #111827;
     /* Section backgrounds */

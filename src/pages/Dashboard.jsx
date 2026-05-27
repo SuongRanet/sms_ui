@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import useRole from "../hooks/useRole";
-import { useState,} from "react";
+import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
@@ -25,7 +25,7 @@ const Dashboard = () => {
     const currentRole = useMemo(() => findRole(), []);
     return (
         <div
-            className={`w-full h-screen grid grid-cols-[12%_88%] bg-gray-bg md:grid-cols-[12%_88%] relative ${open ? "grid-cols-[16%_84%] lg:grid-cols-[17%_83%]" : "lg:grid-cols-[4%_96%]"} duration-400 ease-in-out`}
+            className={`w-full h-screen grid bg-gray-bg relative ${open ? "grid-cols-[13%_87%]  md:grid-cols-[5.5%_94.5%] lg:grid-cols-[17%_83%]"  : "lg:grid-cols-[9%_91%] "} duration-400 ease-in-out`}
         >
             <div className="col-span-2 p-2 pr-6 flex items-center ">
                 {/* header  */}
@@ -38,9 +38,9 @@ const Dashboard = () => {
             {/* Sidebar */}
             <Sidebar currentRole={currentRole} open={open} />
             {/* right */}
-            <div className="grid grid-cols-2 grid-rows-[9%_91%] md:grid-rows-[12%_88%] lg:grid-rows-[11%_89%]">
+            <div className="grid grid-cols-2 grid-rows-[9%_91%] md:grid-rows-[12%_88%] lg:grid-rows-[11%_89%] ">
                 <div className=" overflow-y-auto w-full col-span-2 h-162">
-                    <div className="p-8 pl-8">
+                    <div className="p-4">
                         {/* content */}
                         <Outlet />
                     </div>

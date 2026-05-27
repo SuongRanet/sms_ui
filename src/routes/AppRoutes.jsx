@@ -3,8 +3,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "../auth/Login";
 import Dashboard from "../pages/Dashboard";
 import AllCharts from "../pages/AllCharts";
+import UserList from "../pages/UserList";
 import useAuthStore from "../stores/useAuthStore";
 import cookie from "cookiejs";
+import CreateUser from "../pages/CreateUser";
 
 const ProtectedRoute = ({ children }) => {
     const accessToken = cookie.get("accessToken");
@@ -49,6 +51,17 @@ export default function AppRoutes() {
             >
                 {/*children go here */}
                 <Route index element={<AllCharts />} />
+            </Route>
+            <Route
+                path="/userList"
+                element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            >
+                {/*children go here */}
+                <Route index element={<UserList />} />
             </Route>
         </Routes>
     );

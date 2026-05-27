@@ -13,14 +13,14 @@ const Header = ({ currentRole, setOpen, open }) => {
     const handleOpen = () => setOpen((prev) => !prev);
 
     return (
-        <div className="flex items-center justify-between gap-3 w-full pl-4">
+        <div className="flex items-center justify-between gap-3 w-full pl-2">
             <div className={`flex items-center justify-center duration-500 gap-2`}>
-                <button
+                {/* <button
                     onClick={handleOpen}
-                    className={`${open ? "rotate-180" : " "}  hidden lg:block rounded-full p-1 hover:bg-gold-accent/20 duration-400 ease-in-out text-dark-text hover:text-gold-accent cursor-pointer transition-transform `}
+                    className={`${open ? "rotate-180" : " "}  rounded-full p-1 hover:bg-gold-accent/20 duration-400 ease-in-out text-dark-text hover:text-gold-accent cursor-pointer transition-transform `}
                 >
                     <ChevronsLeft size={34} />
-                </button>
+                </button> */}
                 <div className="flex items-center justify-start gap-2">
                     <img
                         // src="src/assets/dydy.jpg"

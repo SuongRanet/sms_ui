@@ -28,7 +28,7 @@ const Dropdown = () => {
     };
 
     return (
-        <div className="relative">
+        <div className="relative duration-300 ease-in-out">
             <div
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="dropbtn hover:shadow-lg hover:ring-offset-white hover:ring-4 ring-gold-accent ring-offset-2 shadow-gold-accent/50 transition-shadow duration-300 h-9 w-9 rounded-full flex items-center justify-center cursor-pointer"

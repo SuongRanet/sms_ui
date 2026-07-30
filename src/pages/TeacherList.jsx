@@ -8,7 +8,7 @@ import { Trash2, TriangleAlert, OctagonX } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../stores/useThemeStore";
 import { useTranslation } from "react-i18next";
-import ProfileDetail from "../components/custom/ProfileDetail";
+import EditTeacher from "../components/custom/editTeacher";
 
 // Avatar backgrounds built from your theme tokens (rotates for variety)
 const ROLE_AVATAR_STYLES = {
@@ -55,21 +55,22 @@ function getAvatarStyle(seed = "", roles = []) {
     return AVATAR_STYLES[Math.abs(hash) % AVATAR_STYLES.length];
 }
 
-const UserList = () => {
+const Teacherlist = () => {
+    const [openDetail , setOpenDetail] = useState(null)
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selected, setSelected] = useState([]);
-    const [openDetail, setOpenDetail] = useState(null);
     const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false);
     const [page, setPage] = useState(0);
     const [size] = useState(10);
-    const [enable, setEnable] = useState(false)
     const [selectedUser, setSelectedUser] = useState(null);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
+    const [enable, setEnable] = useState(false)
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [keyword, setKeyword] = useState("");
     function formatDate(iso) {
         if (!iso) return "—";
         return new Date(iso).toLocaleDateString("en-US", {
@@ -78,13 +79,11 @@ const UserList = () => {
             day: "2-digit",
         });
     }
-    const theme = useThemeStore((state) => state.theme);
     const [search, setSearch] = useState("");
-
     const filteredUsers = users.filter((u) => {
         const q = search.toLowerCase();
         return (
-            `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
+            `${u.firstNameEn} ${u.lastNameEn}`.toLowerCase().includes(q) ||
             u.email?.toLowerCase().includes(q) ||
             u.username?.toLowerCase().includes(q)
         );
@@ -94,15 +93,23 @@ const UserList = () => {
         setError(null);
 
         try {
-            const response = await serverRest.get(
-                `/api/v1/users/?page=${page}&size=${size}`,
+            const response = await serverRest.post(`/api/v1/teachers/search`, {
+                keyword: keyword,
+                departmentId: 0,
+                sex: "",
+                hiredDate: "",
+                page: page,
+                size: size,
+                sortBy: "id",
+                direction: "asc",
+            });
+            const data = response;
+            console.log(data.data.data)
+            setUsers(data.data.data || []);
+            setTotalPages(
+                Math.ceil((data.data.total || 0) / (data.data.size || size)),
             );
-
-            const data = response.data.data;
-            console.log(data)
-            setUsers(data.content || []);
-            setTotalPages(data.totalPages || 0);
-            setTotalElements(data.totalElements || 0);
+            setTotalElements(data.data.total || 0);
         } catch (error) {
             console.error(error);
             setError("Failed to load users.");
@@ -110,26 +117,30 @@ const UserList = () => {
             setLoading(false);
         }
     };
-
     useEffect(() => {
-        const timeOut = setTimeout (()=>{
+        setPage(0);
+    }, [keyword]);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
             fetchUsers();
-        },400);
-
-    }, [page]);
+        }, 400);
+        return () => clearTimeout(timeout);
+    }, [page, keyword]);
 
     const handleEdit = (user) => {
         // TODO: implement edit flow
         console.log("Edit user:", user);
-        // navigate(`/userList/editUser/${user.userId}`);
+        navigate(`/editTeacher/${user.teacherId}`);
     };
     const handleDelete = async (user) => {
         try {
             const response = await serverRest.delete(
-                `/api/v1/users/${user.userId}`,
+                `/api/v1/teachers/${user.teacherId}`,
             );
             // console.log("Delete Success:", response.data);
-            setUsers((prev) => prev.filter((u) => u.userId !== user.userId));
+            setUsers((prev) =>
+                prev.filter((u) => u.teacherId !== user.teacherId),
+            );
             toast.success("User deleted successfully!", {
                 position: "top-right",
                 autoClose: 5000,
@@ -159,17 +170,7 @@ const UserList = () => {
             });
         }
     };
-
-    const toggleSelect = (userId) => {
-        setSelected((prev) =>
-            prev.includes(userId)
-                ? prev.filter((id) => id !== userId)
-                : [...prev, userId],
-        );
-    };
-
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
-
     const rangeStart = totalElements === 0 ? 0 : page * size + 1;
     const rangeEnd = Math.min((page + 1) * size, totalElements);
 
@@ -177,12 +178,12 @@ const UserList = () => {
         <div className="bg-white1 text-dark-text rounded-xl shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
                 <div>
-                    <SearchInput onChange={setSearch} />
+                    <SearchInput value={keyword} onChange={setKeyword} />
                 </div>
                 <div className="">
                     <button
-                        onClick={() => navigate("/userList/CreateUser")}
-                        className="text-sm font-bold w-full h-full bg-indigo-500 text-white1 px-6 py-1.5 rounded-lg hover:bg-primary-blue/80 cursor-pointer"
+                        onClick={() => navigate("/CreateUser")}
+                        className="text-sm font-medium w-full h-full bg-indigo-500 text-white1 px-6 py-1.5 rounded-lg hover:bg-primary-blue/80 cursor-pointer"
                     >
                         {t("table.addUser")}
                     </button>
@@ -199,13 +200,26 @@ const UserList = () => {
                     <thead className="sticky top-0 z-10 bg-gray-bg">
                         <tr>
                             <th className="text-left px-2 py-3 opacity-50 font-medium">
-                                #
+                                ID
                             </th>
-                            <th className="text-left px-2 py-3">{t("table.user")}</th>
-                            <th className="text-left px-2 py-3">{t("table.email")}</th>
-                            <th className="text-left px-2 py-3">{t("table.role")}</th>
-                            <th className="text-left px-2 py-3">{t("table.status")}</th>
-                            <th className="text-left px-2 py-3">{t("table.createAt")}</th>
+                            <th className="text-left px-2 py-3">
+                                {/* {t("table.user")} */}
+                                Full Name
+                            </th>
+                            <th className="text-left px-2 py-3">
+                                {/* {t("table.email")} */}
+                                Phone Number
+                            </th>
+                            {/* <th className="text-left px-2 py-3">
+                                {t("table.role")}
+                            </th>
+                            <th className="text-left px-2 py-3">
+                                {t("table.status")}
+                            </th> */}
+                            <th className="text-left px-2 py-3">
+                                {/* {t("table.createAt")} */}
+                                Register
+                            </th>
                             <th className="text-left px-2 py-3 w-36">
                                 {t("table.action")}
                             </th>
@@ -244,25 +258,24 @@ const UserList = () => {
                             !error &&
                             users.map((user, index) => {
                                 const fullName =
-                                    `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() ||
+                                    `${user.firstNameEn ?? ""} ${user.lastNameEn ?? ""}`.trim() ||
                                     "Unknown";
                                 const initials = getInitials(
-                                    user.firstName,
-                                    user.lastName,
+                                    user.firstNameEn,
+                                    user.lastNameEn,
                                 );
                                 const avatarStyle = getAvatarStyle(
-                                    user.userId?.toString() ?? fullName,
-                                    user.role,
+                                    user.teacherId?.toString() ?? fullName,
                                 );
 
                                 return (
                                     <tr
-                                        key={user.userId}
+                                        key={user.teacherId}
                                         className="bg-white1 border-t border-gray-bg hover:bg-light-blue/40"
-                                        onClick={()=>(setOpenDetail(user.userId))}
+                                        onClick={()=>(setOpenDetail(user.teacherId))}
                                     >
                                         <td className="px-2 opacity-50">
-                                            {page * size + index + 1}
+                                            {user.teacherId}
                                         </td>
 
                                         <td className="px-2 py-3">
@@ -277,17 +290,17 @@ const UserList = () => {
                                                         {fullName}
                                                     </div>
                                                     <div className="opacity-50 text-xs">
-                                                        {user.username}
+                                                        {user.firstNameEn}{user.lastNameEn}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
 
                                         <td className="px-2 opacity-80">
-                                            {user.email}
+                                            {user.phoneNumber}
                                         </td>
 
-                                        <td className="px-2">
+                                        {/* <td className="px-2">
                                             <div className="flex flex-col gap-1 items-start">
                                                 {(user.roles ?? []).map(
                                                     (role) => (
@@ -306,9 +319,9 @@ const UserList = () => {
                                                     ),
                                                 )}
                                             </div>
-                                        </td>
+                                        </td> */}
 
-                                        <td className="px-2">
+                                        {/* <td className="px-2">
                                             <div className="flex flex-col gap-1 text-xs">
                                                 <span
                                                     className={
@@ -322,35 +335,31 @@ const UserList = () => {
                                                         : "— Unverified"}
                                                 </span>
                                             </div>
-                                        </td>
+                                        </td> */}
 
                                         <td className="px-2 opacity-80">
-                                            {formatDate(user.createdAt)}
+                                            {user.hiredDate}
                                         </td>
 
                                         <td className="px-2 py-3">
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() =>
-                                                        // setOpenDetail(user.userId)
-                                                        setEnable(true)
+                                                        handleEdit(user)
                                                     }
                                                     className="bg-primary-blue text-white1 px-2 py-1 rounded"
                                                 >
                                                     {t("table.edit")}
                                                 </button>
 
-                                                <button 
-                                                    
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
+                                                <button
+                                                    onClick={() => {
                                                         setSelectedUser(user);
                                                         setIsOpenDeleteAlert(
                                                             true,
-                                                            
                                                         );
                                                     }}
-                                                    className="bg-gold-accent text-white1 px-2 py-1  rounded"
+                                                    className="bg-gold-accent text-white1 px-2 py-1 rounded"
                                                 >
                                                     {t("table.delete")}
                                                 </button>
@@ -369,7 +378,8 @@ const UserList = () => {
                     <span className="font-medium">
                         {rangeStart}–{rangeEnd}
                     </span>{" "}
-                    {t("table.of")} <span className="font-medium">{totalElements}</span>{" "}
+                    {t("table.of")}{" "}
+                    <span className="font-medium">{totalElements}</span>{" "}
                     {t("table.user")}
                 </div>
 
@@ -418,20 +428,18 @@ const UserList = () => {
                 btnColor="bg-gold-accent"
                 btnColorHover="hover:bg-gold-accent/50"
             />
-            
-            <ProfileDetail
-            title={"Profile Detail"}
-            user={users.find(user=>
-                user.userId === openDetail
-            )}
-            open={openDetail!== null}
-            onClose={()=>setOpenDetail(null)}
-            fetchUser={fetchUsers}
-            isEnable={enable}
-            setEnable={setEnable}
+            <EditTeacher
+                title={"Profile Detail"}
+                user={users.find((user) => user.teacherId === openDetail)}
+                open={openDetail !== null}
+                onClose={() => setOpenDetail(null)}
+                fetchUser={fetchUsers}
+                isEnable={enable}
+                setEnable={setEnable}
             />
+            
         </div>
     );
 };
 
-export default UserList;
+export default Teacherlist;

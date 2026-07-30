@@ -1,8 +1,33 @@
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
+@font-face {
+    font-family: "Eng";
+    src: url("./assets/fonts/Nunito-Italic-VariableFont_wght.ttf")
+        format("truetype");
+}
+
+@font-face {
+    font-family: "Khmer";
+    src: url("./assets/fonts/NotoSerifKhmer-VariableFont_wdth,wght.ttf")
+        format("truetype");
+}
+
+.font-khmer {
+    font-family: "Khmer", sans-serif;
+}
+
+.font-english {
+    font-family: "Eng", sans-serif;
+}
 * {
-    font-family: "Raleway", sans-serif;
+    font-family: "Inter", sans-serif;
+}
+* {
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
 }
 
 :root {

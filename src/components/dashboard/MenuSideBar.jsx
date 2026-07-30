@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useRole from "../../hooks/useRole";
 import {
     LayoutDashboard,
@@ -14,9 +14,10 @@ import {
     Crown,
     BookOpen,
     Building2,
-    UserRoundPlus
+    UserRoundPlus,
 } from "lucide-react";
 import { ButtonLink } from "../custom/ButtonLink";
+import { useTranslation } from "react-i18next";
 const shows = {
     ADMIN: {
         dashboard: true,
@@ -30,7 +31,7 @@ const shows = {
         parent: true,
         class: true,
         subject: true,
-        createUser: true,
+        user: true,
     },
     TEACHER: {
         dashboard: true,
@@ -50,41 +51,45 @@ const shows = {
 const MenuSideBar = ({ open }) => {
     const { findRole } = useRole();
     // const role = findRole();
-
+    const { t } = useTranslation();
     const isShow = shows[findRole()];
-
     return (
         <div className="h-full pt-4 relative">
             <div
                 className={` border-none lg:border-gray-300 lg:dark:border-gray-700 pl-2 ${open ? "border-gray-300 dark:border-gray-700  border-b lg:mb-4 lg:pb-2" : "border-none "}`}
             >
                 <p className="text-sm hidden lg:block px-2 dark:text-gray-600 text-gray-400 ">
-                    General
+                    {t("dashboard.general")}
                 </p>
                 {isShow.dashboard && (
-                    <ButtonLink to="/" Icon={House} label="Home" open={open} />
+                    <ButtonLink
+                        to="/dashboard"
+                        Icon={House}
+                        label={t("dashboard.home")}
+                        open={open}
+                    />
                 )}
             </div>
             <div
                 className={` border-none lg:border-gray-300 lg:dark:border-gray-700 pl-2 ${open ? "border-gray-300 dark:border-gray-700  border-b lg:pb-2 lg:mb-4" : "border-none"}`}
             >
                 <p className="text-sm hidden lg:block px-2 dark:text-gray-600 text-gray-400 ">
-                    Management
+                    {t("dashboard.management")}
                 </p>
 
                 {isShow.teacher && (
                     <ButtonLink
-                        to="/teacher"
+                        to="/teacherList"
                         Icon={GraduationCap}
-                        label="Teachers"
+                        label={t("dashboard.teacher")}
                         open={open}
                     />
                 )}
                 {isShow.student && (
                     <ButtonLink
-                        to="/student"
+                        to="/studentList"
                         Icon={Users}
-                        label="Students"
+                        label={t("dashboard.student")}
                         open={open}
                     />
                 )}
@@ -92,45 +97,21 @@ const MenuSideBar = ({ open }) => {
                     <ButtonLink
                         to="/parent"
                         Icon={UserRound}
-                        label="Parents"
+                        label={t("dashboard.parent")}
                         open={open}
                     />
                 )}
-                {isShow.class && (
+                {isShow.user && (
                     <ButtonLink
-                        to="/class"
-                        Icon={Building2}
-                        label="Classes"
-                        open={open}
-                    />
-                )}
-                {isShow.subject && (
-                    <ButtonLink
-                        to="/subject"
-                        Icon={BookOpen}
-                        label="Subjects"
-                        open={open}
-                    />
-                )}
-                {isShow.schedule && (
-                    <ButtonLink
-                        to="/schedule"
-                        Icon={CalendarDays}
-                        label="Schedule"
-                        open={open}
-                    />
-                )}
-                {isShow.attendence && (
-                    <ButtonLink
-                        to="/attendence"
-                        Icon={CalendarCheck2}
-                        label="Attendence"
+                        to="/userList"
+                        Icon={User}
+                        label={t("dashboard.user")}
                         open={open}
                     />
                 )}
                 {isShow.createUser && (
                     <ButtonLink
-                        to="/create-user"
+                        to="/createUser"
                         Icon={UserRoundPlus}
                         label="Create User"
                         open={open}
@@ -140,11 +121,46 @@ const MenuSideBar = ({ open }) => {
             <div
                 className={` border-none lg:border-gray-300 lg:dark:border-gray-700 pl-2 ${open ? "border-gray-300 dark:border-gray-700  border-b lg:pb-2 lg:mb-4" : "border-none"}`}
             >
+                <p className="text-sm hidden lg:block px-2 dark:text-gray-600 text-gray-400 ">
+                    {t("dashboard.academic")}
+                </p>
+                {isShow.class && (
+                    <ButtonLink
+                        to="/class"
+                        Icon={Building2}
+                        label={t("dashboard.class")}
+                        open={open}
+                    />
+                )}
+                {isShow.subject && (
+                    <ButtonLink
+                        to="/subject"
+                        Icon={BookOpen}
+                        label={t("dashboard.subject")}
+                        open={open}
+                    />
+                )}
+                {isShow.schedule && (
+                    <ButtonLink
+                        to="/schedule"
+                        Icon={CalendarDays}
+                        label={t("dashboard.schedule")}
+                        open={open}
+                    />
+                )}
+                {isShow.attendence && (
+                    <ButtonLink
+                        to="/attendence"
+                        Icon={CalendarCheck2}
+                        label={t("dashboard.attendance")}
+                        open={open}
+                    />
+                )}
                 {isShow.score && (
                     <ButtonLink
                         to="/score"
                         Icon={Medal}
-                        label="Score"
+                        label={t("dashboard.score")}
                         open={open}
                     />
                 )}
@@ -152,7 +168,7 @@ const MenuSideBar = ({ open }) => {
                     <ButtonLink
                         to="/grade"
                         Icon={Hospital}
-                        label="Grade"
+                        label={t("dashboard.grade")}
                         open={open}
                     />
                 )}

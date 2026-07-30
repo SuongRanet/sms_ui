@@ -2,11 +2,34 @@
 import AppRoutes from "./routes/AppRoutes";
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-
+import { ToastContainer, Bounce } from "react-toastify";
+import useThemeStore from "./stores/useThemeStore";
+import { useTranslation } from "react-i18next";
 const App = () => {
+    const theme = useThemeStore((state) => state.theme);
+    const { i18n } = useTranslation();
     return (
         <Router>
-            <AppRoutes />
+            <div
+                className={
+                    i18n.language === "kh" ? "font-khmer" : "font-english"
+                }
+            >
+                <AppRoutes />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick={false}
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="{useThemeStore.getState().theme}"
+                    transition={Bounce}
+                />
+            </div>
         </Router>
     );
 };

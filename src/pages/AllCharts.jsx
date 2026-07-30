@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import useRole from "../hooks/useRole";
 import { useControls } from "leva";
 import { Users, Hospital } from "lucide-react";
 import StudentSex from "../components/StudentSex";
 import StudentAttended from "../components/StudentAttended";
 import TotalCard from "../components/custom/TotalCard";
+import serverRest from "../services/axios";
 
 const shows = {
     ADMIN: {
@@ -31,6 +32,60 @@ const shows = {
 // pnpm add leva
 
 const AllCharts = () => {
+    const [error, setError] = useState(null);
+    const [totalTeacher, setTotalTeacher] = useState(0);
+    const [totalStudent , setTotalStudent] = useState(0)
+    const fetchTeacher = async () => {
+        try {
+            const response = await serverRest.post(`/api/v1/teachers/search`, {
+                keyword: "",
+                departmentId: 0,
+                sex: "",
+                hiredDate: "",
+                page: "",
+                size: "",
+                sortBy: "id",
+                direction: "asc",
+            });
+            const data = response;
+            setTotalTeacher(data.data.total || 0);
+        } catch (error) {
+            console.error(error);
+            setError("Failed to load users.");
+        } finally {
+        }
+    };
+    const fetchStudent = async () => {
+        setError(null);
+        try {
+            const response = await serverRest.post(`/api/v1/students/search`, {
+                keyword: "",
+                province: "",
+                gender: "",
+                fullNameKh: "",
+                gradeLevel: "",
+                classId: "",
+                enrolledFrom: "",
+                enrolledTo: "",
+                page: 0,
+                size: 10,
+                sortBy: "id",
+                direction: "asc",
+            });
+            const data = response;
+            setTotalStudent(data.data.total || 0);
+            console.log(data.data.total)
+        } catch (error) {
+            console.error(error);
+            setError("Failed to load users.");
+        }};
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            fetchTeacher();
+            fetchStudent();
+        }, 400);
+        return () => clearTimeout(timeout);
+    });
     const { findRole } = useRole();
     // const role = findRole();
     const { role } = useControls({
@@ -39,12 +94,8 @@ const AllCharts = () => {
             options: ["ADMIN", "TEACHER", "STUDENT", "PARENT"],
         },
     });
-    console.log("Role found", role);
+    // console.log("Role found", role);
     const isShow = shows[role];
-
-    const tolalTeacher = 20;
-    const totalStudent = 120;
-    const totalClass = 4;
 
     return (
         <div className="flex flex-col gap-6">
@@ -53,7 +104,7 @@ const AllCharts = () => {
                 {isShow.teacher && (
                     <TotalCard
                         title="Teacher"
-                        value={20}
+                        value={totalTeacher}
                         icon={Hospital}
                         type="teacher"
                     />
@@ -61,7 +112,7 @@ const AllCharts = () => {
                 {isShow.student && role !== "STUDENT" && (
                     <TotalCard
                         title="Student"
-                        value={120}
+                        value={totalStudent}
                         icon={Users}
                         type="student"
                     />

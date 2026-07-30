@@ -1,5 +1,40 @@
 {
     "dashboard": {
-        "title": "Dashboard"
+        "title": "Dashboard",
+        "general": "General",
+        "home": "Home",
+        "management": "management",
+        "teacher": "Teacher",
+        "student": "Student",
+        "parent": "Parent",
+        "class": "Class",
+        "subject": "Subject",
+        "schedule": "Schedule",
+        "attendance": "Attendance",
+        "user": "User",
+        "score": "Score",
+        "grade": "Grade",
+        "academic":"Academics & Evaluation"
+    },
+    "setting": {
+        "profile": "Profile",
+        "setting": "Setting",
+        "logout": "Logout"
+    },
+    "table": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "createAt": "CreateAt",
+        "action": "Action",
+        "search": "Search user...",
+        "addUser": "Add User",
+        "showing": "Showing",
+        "of": "of",
+        "prev": "Prev",
+        "next": "Next",
+        "edit": "Edit",
+        "delete": "Delete"
     }
 }

@@ -4,7 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import logo from "../assets/logo.png";
 import serverRest from "../services/axios";
 import useAuthStore from "../stores/useAuthStore";
-import cookie from "cookiejs";
+import Cookies from "js-cookie";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -13,7 +13,6 @@ export const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
@@ -23,16 +22,14 @@ export const Login = () => {
                 username,
                 password,
             });
-
-            console.log("Login response:", response.data);
             const accessToken = response.data.data.accessToken;
             const refreshToken = response.data.data.refreshToken;
-
-            cookie("accessToken", accessToken, { expires: 3 }); // Store token in cookie for 3 days
+            Cookies.set("accessToken", accessToken, { expires: 0.5 }); // Store token in cookie for 3 days
             console.log("Login success:", response.data);
+            const token = Cookies.get("accessToken");
+            console.log("Token after login:", token);
 
             login(response.data.data.user);
-
             // const roles = response.data.data.user.roles.map((r) => r.roleName);
             // localStorage.setItem("roles", JSON.stringify(roles));
             navigate("/dashboard");

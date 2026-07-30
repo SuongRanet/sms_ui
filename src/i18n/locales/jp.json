@@ -1,0 +1,40 @@
+{
+    "dashboard": {
+        "title": "ダッシュボード",
+        "general": "一般",
+        "home": "ホーム",
+        "management": "管理",
+        "teacher": "教師",
+        "student": "学生",
+        "parent": "保護者",
+        "class": "クラス",
+        "subject": "科目",
+        "schedule": "時間割",
+        "attendance": "出席",
+        "user": "ユーザー",
+        "score": "成績",
+        "grade": "学年",
+        "academic":"学術・評価"
+    },
+    "setting": {
+        "profile": "プロフィ",
+        "setting": "設定",
+        "logout": "ログアウト"
+    },
+    "table": {
+        "user": "ユーザー",
+        "email": "メール",
+        "role": "役割",
+        "status": "ステータス",
+        "createAt": "作成日",
+        "action": "操作",
+        "search": "ユーザーを検索...",
+        "addUser": "ユーザーを追加",
+        "showing": "表示中",
+        "of": "/",
+        "prev": "前へ",
+        "next": "次へ",
+        "edit": "編集",
+        "delete": "削除"
+    }
+}

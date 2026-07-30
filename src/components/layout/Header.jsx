@@ -6,15 +6,17 @@ import { useState } from "react";
 import { ChevronsLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const Header = ({ currentRole, setOpen, open }) => {
+const Header = ({ currentRole, setOpen, open ,onClose}) => {
     const { t } = useTranslation();
     const { user } = useAuthStore();
-
+    const [isOpenSetting, setIsOpenSetting] = useState(false);
     const handleOpen = () => setOpen((prev) => !prev);
 
     return (
         <div className="flex items-center justify-between gap-3 w-full pl-2">
-            <div className={`flex items-center justify-center duration-500 gap-2`}>
+            <div
+                className={`flex items-center justify-center duration-500 gap-2`}
+            >
                 {/* <button
                     onClick={handleOpen}
                     className={`${open ? "rotate-180" : " "}  rounded-full p-1 hover:bg-gold-accent/20 duration-400 ease-in-out text-dark-text hover:text-gold-accent cursor-pointer transition-transform `}
@@ -24,13 +26,11 @@ const Header = ({ currentRole, setOpen, open }) => {
                 <div className="flex items-center justify-start gap-2">
                     <img
                         // src="src/assets/dydy.jpg"
-                        src="https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/05F0/production/_106002510_uncletufighting.jpg.webp"
+                        src="src/assets/logo.png"
                         alt=""
                         className="h-8 w-8 rounded-full object-cover"
                     />
-                    <h1
-                        className="text-2xl font-bold text-center hidden sm:block"
-                    >
+                    <h1 className="text-2xl font-bold text-center hidden sm:block">
                         {t("dashboard.title")}
                     </h1>
                 </div>
@@ -58,7 +58,7 @@ const Header = ({ currentRole, setOpen, open }) => {
                             currentRole.slice(1).toLowerCase()}
                     </p>
                 </div>
-                <Dropdown />
+                <Dropdown onClose={() => setIsOpenSetting(false)} />
             </div>
         </div>
     );

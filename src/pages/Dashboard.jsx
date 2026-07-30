@@ -22,10 +22,12 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const { findRole } = useRole();
     const [open, setOpen] = useState(true);
+    const [isOpenSetting, setIsOpenSetting] = useState(false);
     const currentRole = useMemo(() => findRole(), []);
     return (
         <div
-            className={`w-full h-screen grid bg-gray-bg relative ${open ? "grid-cols-[13%_87%]  md:grid-cols-[5.5%_94.5%] lg:grid-cols-[17%_83%]"  : "lg:grid-cols-[9%_91%] "} duration-400 ease-in-out`}
+            className={`w-full h-screen grid bg-gray-bg relative ${open ? "grid-cols-[13%_87%]  md:grid-cols-[5.5%_94.5%] lg:grid-cols-[17%_83%]" : "lg:grid-cols-[9%_91%] "} duration-400 ease-in-out`}
+            onClick={() => setIsOpenSetting(true)}
         >
             <div className="col-span-2 p-2 pr-6 flex items-center ">
                 {/* header  */}
@@ -33,6 +35,7 @@ const Dashboard = () => {
                     currentRole={currentRole}
                     setOpen={setOpen}
                     open={open}
+                    onClose={() => setIsOpenSetting(false)}
                 />
             </div>
             {/* Sidebar */}

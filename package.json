@@ -44,6 +44,7 @@
         "postcss": "^8.5.13",
         "sass-embedded": "^1.100.0",
         "tailwindcss": "^4.2.4",
+        "typescript": "^7.0.2",
         "vite": "^8.0.10"
     }
 }

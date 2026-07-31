@@ -8,7 +8,7 @@ import { Trash2, TriangleAlert, OctagonX } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../stores/useThemeStore";
 import { useTranslation } from "react-i18next";
-import EditTeacher from "../components/custom/editTeacher";
+import EditTeacher from "../components/custom/EditTeacher";
 
 // Avatar backgrounds built from your theme tokens (rotates for variety)
 const ROLE_AVATAR_STYLES = {

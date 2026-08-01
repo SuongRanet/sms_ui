@@ -10,6 +10,9 @@ import CreateUser from "../pages/CreateUser";
 import EditUser from "../pages/EditUser";
 import TeacherList from "../pages/TeacherList";
 import Studentlist from "../pages/StudentList";
+import ForgotPW from "../auth/ForgotPW";
+import ConfirmCode from "../auth/ConfirmCode.jsx";
+import ResetPW from "../auth/ResetPW.jsx";
 
 const ProtectedRoute = ({ children }) => {
     const accessToken = Cookies.get("accessToken");
@@ -42,7 +45,30 @@ export default function AppRoutes() {
                     </AuthedRoute>
                 }
             />
-
+            <Route
+                path="/forgotPassword"
+                element={
+                    <AuthedRoute>
+                        <ForgotPW />
+                    </AuthedRoute>
+                }
+            />
+            <Route
+                path="/confirmCode"
+                element={
+                    <AuthedRoute>
+                        <ConfirmCode />
+                    </AuthedRoute>
+                }
+            />
+            <Route
+                path="/resetPassword"
+                element={
+                    <AuthedRoute>
+                        <ResetPW/>
+                    </AuthedRoute>
+                }
+            />
             {/* Protected */}
             <Route
                 path="/dashboard"
@@ -90,8 +116,7 @@ export default function AppRoutes() {
             >
                 {/*children go here */}
                 <Route index element={<Studentlist />} />
-                <Route path="editTeacher:teacherId"/>
-                
+                <Route path="editTeacher:teacherId" />
             </Route>
         </Routes>
     );

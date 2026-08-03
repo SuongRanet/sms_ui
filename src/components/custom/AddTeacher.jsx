@@ -7,10 +7,8 @@ import { useEffect } from "react";
 import serverRest from "../../services/axios";
 import AlertPopup from "./AlertPopup";
 import { OctagonX, CircleAlert } from "lucide-react";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import useThemeStore from "../../stores/useThemeStore";
 
-const EditTeacher = ({
+const AddTeacher = ({
     title,
     user,
     open,
@@ -26,32 +24,23 @@ const EditTeacher = ({
     const [openLocal, setOpenlocal] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [sure, setSure] = useState(false);
-    const fetchTeacher = async () => {
-        setLoading(true);
-        setError(null);
-        console.log(user?.teacherId);
-        if (!user) return;
-        try {
-            const response = await serverRest.get(
-                `/api/v1/teachers/${user?.teacherId}`,
-            );
-            const data = response.data;
-            console.log(data);
-            setTeacher(data);
-            setCurrentUser(data);
-        } catch (error) {
-            console.error(error);
-            setError("Failed to load users.");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const handleClose = () => {
-        if (checkMatchUser()) {
-            setOpenEdit(false);
-            onClose();
-        } else return setSure(true);
-    };
+    // const fetchTeacher = async () => {
+    //     setLoading(true);
+    //     setError(null);
+    //     if (!user) return;
+    //     try {
+    //         const response = await serverRest.post(`/api/v1/teachers`);
+    //         const data = response.data;
+    //         console.log(data);
+    //         setTeacher(data);
+    //         setCurrentUser(data);
+    //     } catch (error) {
+    //         console.error(error);
+    //         setError("Failed to load users.");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
     const checkMatchUser = () => {
         const userJSON = JSON.stringify(teacher);
         const currentUserJSON = JSON.stringify(currentUser);
@@ -60,16 +49,34 @@ const EditTeacher = ({
         return userJSON === currentUserJSON;
         // console.log(userRoleID)
     };
-
+    const handleClose = () => {
+        if (checkMatchUser()) {
+            setOpenEdit(false);
+            onClose();
+        } else return setSure(true);
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!user) return;
         try {
-            const response = await serverRest.put(
-                `/api/v1/teachers/${user?.teacherId}`,
-                teacher,
-            );
-            toast.success("User updated successfully!", {
+            const response = await serverRest.post("/api/v1/teachers", {
+                firstNameEn: teacher?.firstNameEn,
+                lastNameEn: teacher?.lastNameEn,
+                firstNameKh: teacher?.firstNameKh,
+                lastNameKh: teacher?.lastNameKh,
+                email: teacher?.email,
+                phoneNumber: teacher?.phoneNumber,
+                dateOfBirth: teacher?.dateOfBirth,
+                sex: teacher?.sex,
+                nationalId: teacher?.nationalId,
+                qualification: teacher?.qualification,
+                specialization: teacher?.specialization,
+                salary: parseInt(teacher?.salary),
+                hiredDate: teacher?.hiredDate,
+                employmentStatus: teacher?.employmentStatus,
+                departmentId: parseInt(teacher?.departmentId),
+            });
+
+            toast.success("Teacher added successfully!", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -88,7 +95,7 @@ const EditTeacher = ({
         }
     };
     useEffect(() => {
-        fetchTeacher();
+        // fetchTeacher();
     }, [user]);
 
     // const [isEnable,setIsEnable] = useState(false);
@@ -171,4 +178,4 @@ const EditTeacher = ({
     ) : null;
 };
 
-export default EditTeacher;
+export default AddTeacher;

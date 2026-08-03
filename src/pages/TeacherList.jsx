@@ -4,11 +4,13 @@ import Cookies from "js-cookie";
 import SearchInput from "../components/custom/SearchInput";
 import { useNavigate } from "react-router-dom";
 import AlertPopup from "../components/custom/AlertPopup";
-import { Trash2, TriangleAlert, OctagonX } from "lucide-react";
+import { Trash2, TriangleAlert, OctagonX ,Pencil } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../stores/useThemeStore";
 import { useTranslation } from "react-i18next";
 import EditTeacher from "../components/custom/EditTeacher";
+import AddTeacher from "../components/custom/AddTeacher";
+
 
 // Avatar backgrounds built from your theme tokens (rotates for variety)
 const ROLE_AVATAR_STYLES = {
@@ -56,7 +58,7 @@ function getAvatarStyle(seed = "", roles = []) {
 }
 
 const Teacherlist = () => {
-    const [openDetail , setOpenDetail] = useState(null)
+    const [openDetail, setOpenDetail] = useState(null);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -67,10 +69,11 @@ const Teacherlist = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
-    const [enable, setEnable] = useState(false)
+    const [enable, setEnable] = useState(false);
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [keyword, setKeyword] = useState("");
+    const [addTeacherOpen, setAddTeacherOpen] = useState(false);
     function formatDate(iso) {
         if (!iso) return "—";
         return new Date(iso).toLocaleDateString("en-US", {
@@ -104,7 +107,7 @@ const Teacherlist = () => {
                 direction: "asc",
             });
             const data = response;
-            console.log(data.data.data)
+            console.log(data.data.data);
             setUsers(data.data.data || []);
             setTotalPages(
                 Math.ceil((data.data.total || 0) / (data.data.size || size)),
@@ -182,7 +185,7 @@ const Teacherlist = () => {
                 </div>
                 <div className="">
                     <button
-                        onClick={() => navigate("/CreateUser")}
+                        onClick={() => navigate("/teacherList/createUser")}
                         className="text-sm font-medium w-full h-full bg-indigo-500 text-white1 px-6 py-1.5 rounded-lg hover:bg-primary-blue/80 cursor-pointer"
                     >
                         {t("table.addUser")}
@@ -272,7 +275,9 @@ const Teacherlist = () => {
                                     <tr
                                         key={user.teacherId}
                                         className="bg-white1 border-t border-gray-bg hover:bg-light-blue/40"
-                                        onClick={()=>(setOpenDetail(user.teacherId))}
+                                        onClick={() =>
+                                            setOpenDetail(user.teacherId)
+                                        }
                                     >
                                         <td className="px-2 opacity-50">
                                             {user.teacherId}
@@ -290,7 +295,8 @@ const Teacherlist = () => {
                                                         {fullName}
                                                     </div>
                                                     <div className="opacity-50 text-xs">
-                                                        {user.firstNameEn}{user.lastNameEn}
+                                                        {user.firstNameEn}
+                                                        {user.lastNameEn}
                                                     </div>
                                                 </div>
                                             </div>
@@ -345,23 +351,29 @@ const Teacherlist = () => {
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() =>
-                                                        handleEdit(user)
+                                                        setOpenDetail(
+                                                            user.teacherId,
+                                                        )
                                                     }
-                                                    className="bg-primary-blue text-white1 px-2 py-1 rounded"
+                                                    className="flex items-center gap-0.5 bg-primary-blue text-white1 px-2 py-1 rounded"
                                                 >
-                                                    {t("table.edit")}
+                                                    <Pencil className="w-4 h-4" />
+                                                    <span>{t("table.edit")}</span>
                                                 </button>
 
                                                 <button
-                                                    onClick={() => {
+                                                        
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         setSelectedUser(user);
                                                         setIsOpenDeleteAlert(
                                                             true,
                                                         );
                                                     }}
-                                                    className="bg-gold-accent text-white1 px-2 py-1 rounded"
+                                                    className="items-center flex bg-gold-accent text-white1 px-2 py-1 rounded"
                                                 >
-                                                    {t("table.delete")}
+                                                    <Trash2 className="w-4 h-4" />
+                                                    <span>{t("table.delete")}</span>
                                                 </button>
                                             </div>
                                         </td>
@@ -437,7 +449,15 @@ const Teacherlist = () => {
                 isEnable={enable}
                 setEnable={setEnable}
             />
-            
+            {/* <AddTeacher
+                title={"Register Teacher"}
+                // user={users.find((user) => user.teacherId === openDetail)}
+                open={addTeacherOpen}
+                onClose={() => setAddTeacherOpen(false)}
+                // fetchUser={fetchUsers}
+                isEnable={enable}
+                setEnable={setEnable}
+            /> */}
         </div>
     );
 };

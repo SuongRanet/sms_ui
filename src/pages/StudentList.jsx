@@ -8,6 +8,7 @@ import { Trash2, TriangleAlert, OctagonX } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../stores/useThemeStore";
 import { useTranslation } from "react-i18next";
+import EditStudent from "../components/custom/EditStudent";
 
 // Avatar backgrounds built from your theme tokens (rotates for variety)
 const ROLE_AVATAR_STYLES = {
@@ -55,6 +56,8 @@ function getAvatarStyle(seed = "", roles = []) {
 }
 
 const Studentlist = () => {
+    const [enable, setEnable] = useState(false);
+    const [openDetail, setOpenDetail] = useState(null);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -100,13 +103,14 @@ const Studentlist = () => {
                 enrolledFrom: "",
                 enrolledTo: "",
 
-                page: page, // ✅ ใช้ state page ปัจจุบัน แทน hardcode 0
-                size: size, // ✅ ใช้ state size ปัจจุบัน แทน hardcode 10
+                page: page,
+                size: size,
 
                 sortBy: "id",
                 direction: "asc",
             });
             const data = response;
+            console.log(data.data.data);
             setUsers(data.data.data || []);
             setTotalElements(data.data.total || 0);
             setTotalPages(
@@ -184,7 +188,7 @@ const Studentlist = () => {
                 </div>
                 <div className="">
                     <button
-                        onClick={() => navigate("/CreateUser")}
+                        onClick={() => navigate("/studentList/createUser")}
                         className="text-sm font-medium w-full h-full bg-indigo-500 text-white1 px-6 py-1.5 rounded-lg hover:bg-primary-blue/80 cursor-pointer"
                     >
                         {t("table.addUser")}
@@ -260,11 +264,11 @@ const Studentlist = () => {
                             !error &&
                             users.map((user, index) => {
                                 const fullName =
-                                    `${user.studentfirstNameEn ?? ""} ${user.studentlastNameEn ?? ""}`.trim() ||
+                                    `${user.firstNameEn ?? ""} ${user.lastNameEn ?? ""}`.trim() ||
                                     "Unknown";
                                 const initials = getInitials(
-                                    user.studentfirstNameEn,
-                                    user.studentlastNameEn,
+                                    user.firstNameEn,
+                                    user.lastNameEn,
                                 );
                                 const avatarStyle = getAvatarStyle(
                                     user.studentId?.toString() ?? fullName,
@@ -274,6 +278,9 @@ const Studentlist = () => {
                                     <tr
                                         key={user.studentId}
                                         className="bg-white1 border-t border-gray-bg hover:bg-light-blue/40"
+                                        onClick={() =>
+                                            setOpenDetail(user.studentId)
+                                        }
                                     >
                                         <td className="px-2 opacity-50">
                                             {user.studentId}
@@ -291,7 +298,8 @@ const Studentlist = () => {
                                                         {fullName}
                                                     </div>
                                                     <div className="opacity-50 text-xs">
-                                                        {user.fullNameEn}
+                                                        {user.firstNameEn}{" "}
+                                                        {user.lastNameEn}
                                                     </div>
                                                 </div>
                                             </div>
@@ -416,6 +424,15 @@ const Studentlist = () => {
                     </button>
                 </div>
             </div>
+            <EditStudent
+                title={"Profile Detail"}
+                user={users.find((user) => user.studentId === openDetail)}
+                open={openDetail !== null}
+                onClose={() => setOpenDetail(null)}
+                fetchUser={fetchUsers}
+                isEnable={enable}
+                setEnable={setEnable}
+            />
             <AlertPopup
                 open={isOpenDeleteAlert}
                 onClose={() => setIsOpenDeleteAlert(false)}

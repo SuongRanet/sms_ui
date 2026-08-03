@@ -13,6 +13,15 @@ const FormField = ({ isEnable, valueTeacher, isDisable, setValueTeacher }) => {
         }
         return value;
     };
+
+    const departmentOption = {
+        "Mathematics":1,
+        "Science":2,
+        "Languages":3,
+        "Social Studies":4,
+        "Information Technology":5,
+    }
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setValueTeacher((prev) => ({
@@ -27,7 +36,7 @@ const FormField = ({ isEnable, valueTeacher, isDisable, setValueTeacher }) => {
                     label={"First NameEn"}
                     disable={isEnable}
                     type={Text}
-                    nameId={"fullNameEn"}
+                    nameId={"firstNameEn"}
                     value={valueTeacher?.firstNameEn || ""}
                     onChange={handleChange}
                 />
@@ -35,7 +44,7 @@ const FormField = ({ isEnable, valueTeacher, isDisable, setValueTeacher }) => {
                     label={"First NameKh"}
                     disable={isEnable}
                     type={Text}
-                    nameId={"firstnamekh"}
+                    nameId={"firstNameKh"}
                     value={valueTeacher?.firstNameKh || ""}
                     onChange={handleChange}
                 />
@@ -43,7 +52,7 @@ const FormField = ({ isEnable, valueTeacher, isDisable, setValueTeacher }) => {
                     label={"Last NameEn"}
                     disable={isEnable}
                     type={Text}
-                    nameId={"lastnameen"}
+                    nameId={"lastNameEn"}
                     value={valueTeacher?.lastNameEn || ""}
                     onChange={handleChange}
                 />
@@ -51,7 +60,7 @@ const FormField = ({ isEnable, valueTeacher, isDisable, setValueTeacher }) => {
                     label={"Last NameKh"}
                     disable={isEnable}
                     type={Text}
-                    nameId={"lastnamekh"}
+                    nameId={"lastNameKh"}
                     value={valueTeacher?.lastNameKh || ""}
                     onChange={handleChange}
                 />
@@ -139,6 +148,16 @@ const FormField = ({ isEnable, valueTeacher, isDisable, setValueTeacher }) => {
                     type={Number}
                     nameId={"salary"}
                     value={valueTeacher?.salary || ""}
+                    onChange={handleChange}
+                />
+                <FormSelection
+                    label="Department"
+                    selectValue={valueTeacher?.departmentId ?? ""}
+                    nameId="departmentId"
+                    options={[
+                        { text: "Select Department", value: "" },
+                        ...Object.entries(departmentOption).map(([text, value]) => ({ text, value })),
+                    ]}
                     onChange={handleChange}
                 />
             </div>

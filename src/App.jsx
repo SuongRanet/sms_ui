@@ -12,7 +12,7 @@ const App = () => {
         <Router>
             <div
                 className={
-                    i18n.language === "kh" ? "font-khmer" : "font-english"
+                    i18n.language === "kh" ? "font-khmer" :i18n.language === "jp" ? "font-japan" : "font-english"
                 }
             >
                 <AppRoutes />

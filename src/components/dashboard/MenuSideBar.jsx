@@ -95,7 +95,7 @@ const MenuSideBar = ({ open }) => {
                 )}
                 {isShow.parent && (
                     <ButtonLink
-                        to="/parent"
+                        to="/parentList"
                         Icon={UserRound}
                         label={t("dashboard.parent")}
                         open={open}
@@ -126,7 +126,7 @@ const MenuSideBar = ({ open }) => {
                 </p>
                 {isShow.class && (
                     <ButtonLink
-                        to="/class"
+                        to="/classList"
                         Icon={Building2}
                         label={t("dashboard.class")}
                         open={open}

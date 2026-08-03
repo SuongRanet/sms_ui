@@ -10,6 +10,7 @@ import CreateUser from "../pages/CreateUser";
 import EditUser from "../pages/EditUser";
 import TeacherList from "../pages/TeacherList";
 import Studentlist from "../pages/StudentList";
+import ClassList from "../pages/ClassList";
 import ForgotPW from "../auth/ForgotPW";
 import ConfirmCode from "../auth/ConfirmCode.jsx";
 import ResetPW from "../auth/ResetPW.jsx";
@@ -65,7 +66,7 @@ export default function AppRoutes() {
                 path="/resetPassword"
                 element={
                     <AuthedRoute>
-                        <ResetPW/>
+                        <ResetPW />
                     </AuthedRoute>
                 }
             />
@@ -105,6 +106,7 @@ export default function AppRoutes() {
             >
                 {/*children go here */}
                 <Route index element={<TeacherList />} />
+                <Route path="createUser" element={<CreateUser />} />
             </Route>
             <Route
                 path="/studentList"
@@ -116,7 +118,18 @@ export default function AppRoutes() {
             >
                 {/*children go here */}
                 <Route index element={<Studentlist />} />
-                <Route path="editTeacher:teacherId" />
+                <Route path="createUser" element={<CreateUser />} />
+            </Route>
+            <Route
+                path="/classList"
+                element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            >
+                {/*children go here */}
+                <Route index element={<ClassList/>} />
             </Route>
         </Routes>
     );

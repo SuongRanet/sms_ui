@@ -22,16 +22,26 @@ export const Login = () => {
                 username,
                 password,
             });
+
+            const data = response.data.data;
+            // console.log(datal)
+            // Account needs verification
+            if (data.verificationRequired) {
+                sessionStorage.setItem("verificationEmail", data.user.email);
+                navigate("/verify");
+                return;
+            }
+
             const accessToken = response.data.data.accessToken;
             const refreshToken = response.data.data.refreshToken;
             Cookies.set("accessToken", accessToken, { expires: 0.5 }); // Store token in cookie for 3 days
             console.log("Login success:", response.data);
             const token = Cookies.get("accessToken");
             console.log("Token after login:", token);
-
             login(response.data.data.user);
-            // const roles = response.data.data.user.roles.map((r) => r.roleName);
-            // localStorage.setItem("roles", JSON.stringify(roles));
+            const roles = response.data.data.user.roles.map((r) => r.roleName);
+            localStorage.setItem("roles", JSON.stringify(roles));
+
             navigate("/dashboard");
         } catch (error) {
             console.error("Login failed:", error);
@@ -124,7 +134,7 @@ export const Login = () => {
                         </button>
                         <p className="text-gray-500 text-center">
                             <button
-                                onClick={()=> navigate("/forgotPassword")}
+                                onClick={() => navigate("/forgot-password")}
                                 className="text-blue-400 hover:underline"
                             >
                                 Forgot your password?

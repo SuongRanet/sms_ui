@@ -14,6 +14,8 @@ import ClassList from "../pages/ClassList";
 import ForgotPW from "../auth/ForgotPW";
 import ConfirmCode from "../auth/ConfirmCode.jsx";
 import ResetPW from "../auth/ResetPW.jsx";
+import Parentlist from "../pages/ParentList.jsx";
+import VeryFi from "../auth/veryFi.jsx";
 
 const ProtectedRoute = ({ children }) => {
     const accessToken = Cookies.get("accessToken");
@@ -47,7 +49,7 @@ export default function AppRoutes() {
                 }
             />
             <Route
-                path="/forgotPassword"
+                path="/forgot-password"
                 element={
                     <AuthedRoute>
                         <ForgotPW />
@@ -63,7 +65,7 @@ export default function AppRoutes() {
                 }
             />
             <Route
-                path="/resetPassword"
+                path="/reset-password"
                 element={
                     <AuthedRoute>
                         <ResetPW />
@@ -81,7 +83,12 @@ export default function AppRoutes() {
             >
                 {/*children go here */}
                 <Route index element={<AllCharts />} />
-            </Route>
+            </Route> 
+            <Route
+            path="/verify"
+            index element={<VeryFi/>}
+            />
+      
             <Route
                 path="/userList"
                 element={
@@ -121,6 +128,18 @@ export default function AppRoutes() {
                 <Route path="createUser" element={<CreateUser />} />
             </Route>
             <Route
+                path="/parentList"
+                element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            >
+                {/*children go here */}
+                <Route index element={<Parentlist />} />
+                <Route path="createUser" element={<CreateUser />} />
+            </Route>
+            <Route
                 path="/classList"
                 element={
                     <ProtectedRoute>
@@ -129,7 +148,7 @@ export default function AppRoutes() {
                 }
             >
                 {/*children go here */}
-                <Route index element={<ClassList/>} />
+                <Route index element={<ClassList />} />
             </Route>
         </Routes>
     );

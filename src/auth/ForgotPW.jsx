@@ -3,12 +3,33 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import serverRest from "../services/axios";
 import useAuthStore from "../stores/useAuthStore";
+import useThemeStore from "../stores/useThemeStore";
+import { useState } from "react";
 
 const ForgotPW = () => {
+    const { theme } = useThemeStore();
+    const isDark = theme === "dark";
     const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [error, setError] = useState("");
 
-    const handleSendCode = (e) => {
-        navigate("/confirmCode");
+    const handleSendCode = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await serverRest.post(
+                "/api/v1/auth/forgot-password",
+                {
+                    email: email,
+                },
+            );
+            const resetToken = response.data.resetLink;
+            console.log(resetToken);
+            sessionStorage.setItem("resetToken", resetToken);
+            navigate("/reset-password");
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -50,8 +71,7 @@ const ForgotPW = () => {
                             placeholder="Example@gmail.com"
                             className="inputLog"
                             onChange={(e) => {
-                                setUsername(e.target.value);
-                                setError("");
+                                setEmail(e.target.value);
                             }}
                         />
                     </div>

@@ -15,6 +15,7 @@ import {
     BookOpen,
     Building2,
     UserRoundPlus,
+    NotebookPen
 } from "lucide-react";
 import { ButtonLink } from "../custom/ButtonLink";
 import { useTranslation } from "react-i18next";
@@ -32,6 +33,7 @@ const shows = {
         class: true,
         subject: true,
         user: true,
+        enroll:true
     },
     TEACHER: {
         dashboard: true,
@@ -76,7 +78,14 @@ const MenuSideBar = ({ open }) => {
                 <p className="text-sm hidden lg:block px-2 dark:text-gray-600 text-gray-400 ">
                     {t("dashboard.management")}
                 </p>
-
+                {isShow.enroll && (
+                    <ButtonLink
+                        to="/enroolStudnet"
+                        Icon={NotebookPen}
+                        label={t("dashboard.enrollment")}
+                        open={open}
+                    />
+                )}
                 {isShow.teacher && (
                     <ButtonLink
                         to="/teacherList"

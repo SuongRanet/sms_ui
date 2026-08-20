@@ -9,6 +9,7 @@ import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../stores/useThemeStore";
 import { useTranslation } from "react-i18next";
 import ProfileDetail from "../components/custom/ProfileDetail";
+import { motion } from "motion/react";
 
 // Avatar backgrounds built from your theme tokens (rotates for variety)
 const ROLE_AVATAR_STYLES = {
@@ -32,7 +33,13 @@ const ROLE_STYLES = {
     STUDENT: "bg-green-100 text-green-800 border border-green-300",
     PARENT: "bg-purple-100 text-purple-800 border border-purple-300",
 };
-
+const roles = [
+    { label: "All", value: "ALL" },
+    { label: "Students", value: "STUDENT" },
+    { label: "Teachers", value: "TEACHER" },
+    { label: "Parents", value: "PARENT" },
+    { label: "Admins", value: "ADMIN" },
+];
 function getInitials(firstName, lastName) {
     const f = firstName?.[0] ?? "";
     const l = lastName?.[0] ?? "";
@@ -56,6 +63,7 @@ function getAvatarStyle(seed = "", roles = []) {
 }
 
 const UserList = () => {
+    const [selectedRole, setSelectedRole] = useState("ALL");
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -64,10 +72,10 @@ const UserList = () => {
     const [isOpenDeleteAlert, setIsOpenDeleteAlert] = useState(false);
     const [page, setPage] = useState(0);
     const [size] = useState(10);
-    const [enable, setEnable] = useState(false)
+    const [enable, setEnable] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [totalPages, setTotalPages] = useState(0);
-    const [totalElements, setTotalElements] = useState(0);
+    // const [totalPages, setTotalPages] = useState(0);
+    // const [totalElements, setTotalElements] = useState(0);
     const navigate = useNavigate();
     const { t } = useTranslation();
     function formatDate(iso) {
@@ -92,17 +100,12 @@ const UserList = () => {
     const fetchUsers = async () => {
         setLoading(true);
         setError(null);
-
         try {
             const response = await serverRest.get(
-                `/api/v1/users/?page=${page}&size=${size}`,
+                `/api/v1/users/?page=0&size=1000`,
             );
-
             const data = response.data.data;
-            console.log(data)
             setUsers(data.content || []);
-            setTotalPages(data.totalPages || 0);
-            setTotalElements(data.totalElements || 0);
         } catch (error) {
             console.error(error);
             setError("Failed to load users.");
@@ -112,11 +115,45 @@ const UserList = () => {
     };
 
     useEffect(() => {
-        const timeOut = setTimeout (()=>{
-            fetchUsers();
-        },400);
+        fetchUsers();
+    }, []); // fetch once
 
-    }, [page]);
+    // filter by role + search over the FULL set
+    const filteredUsersRoles = users.filter((user) => {
+        const matchesRole =
+            selectedRole === "ALL" ||
+            user.roles?.some((role) => role.roleName === selectedRole);
+
+        const q = search.toLowerCase();
+        const matchesSearch =
+            `${user.firstName} ${user.lastName}`.toLowerCase().includes(q) ||
+            user.email?.toLowerCase().includes(q) ||
+            user.username?.toLowerCase().includes(q);
+
+        return matchesRole && matchesSearch;
+    });
+
+    // recalc pagination from the FILTERED set
+    const totalElements = filteredUsersRoles.length;
+    const totalPages = Math.ceil(totalElements / size) || 0;
+
+    // reset page whenever the filter/search narrows the results
+    useEffect(() => {
+        setPage(0);
+    }, [selectedRole, search]);
+
+    // clamp in case current page no longer exists after filtering
+    useEffect(() => {
+        if (page > 0 && page >= totalPages) {
+            setPage(Math.max(totalPages - 1, 0));
+        }
+    }, [totalPages]);
+
+    // slice the current page out of the filtered set for rendering
+    const pagedUsers = filteredUsersRoles.slice(
+        page * size,
+        page * size + size,
+    );
 
     const handleEdit = (user) => {
         // TODO: implement edit flow
@@ -176,8 +213,40 @@ const UserList = () => {
     return (
         <div className="bg-white1 text-dark-text rounded-xl shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
-                <div>
+                <div className="flex items-center gap-2">
                     <SearchInput onChange={setSearch} />
+
+                    <div className="flex rounded-lg bg-gray-bg w-fit p-0.5">
+                        {roles.map((item) => (
+                            <button
+                                key={item.value}
+                                onClick={() => setSelectedRole(item.value)}
+                                className="relative flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium"
+                            >
+                                {selectedRole === item.value && (
+                                    <motion.div
+                                        layoutId="role-filter"
+                                        className="absolute inset-0 rounded-md bg-white1 shadow"
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 450,
+                                            damping: 35,
+                                        }}
+                                    />
+                                )}
+
+                                <motion.span
+                                    className={`relative z-10 ${
+                                        selectedRole === item.value
+                                    }`}
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    {item.label}
+                                </motion.span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
                 <div className="">
                     <button
@@ -201,11 +270,21 @@ const UserList = () => {
                             <th className="text-left px-2 py-3 opacity-50 font-medium">
                                 #
                             </th>
-                            <th className="text-left px-2 py-3">{t("table.user")}</th>
-                            <th className="text-left px-2 py-3">{t("table.email")}</th>
-                            <th className="text-left px-2 py-3">{t("table.role")}</th>
-                            <th className="text-left px-2 py-3">{t("table.status")}</th>
-                            <th className="text-left px-2 py-3">{t("table.createAt")}</th>
+                            <th className="text-left px-2 py-3">
+                                {t("table.user")}
+                            </th>
+                            <th className="text-left px-2 py-3">
+                                {t("table.email")}
+                            </th>
+                            <th className="text-left px-2 py-3">
+                                {t("table.role")}
+                            </th>
+                            <th className="text-left px-2 py-3">
+                                {t("table.status")}
+                            </th>
+                            <th className="text-left px-2 py-3">
+                                {t("table.createAt")}
+                            </th>
                             <th className="text-left px-2 py-3 w-36">
                                 {t("table.action")}
                             </th>
@@ -242,7 +321,7 @@ const UserList = () => {
 
                         {!loading &&
                             !error &&
-                            users.map((user, index) => {
+                            pagedUsers.map((user, index) => {
                                 const fullName =
                                     `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() ||
                                     "Unknown";
@@ -259,7 +338,9 @@ const UserList = () => {
                                     <tr
                                         key={user.userId}
                                         className="bg-white1 border-t border-gray-bg hover:bg-light-blue/40"
-                                        onClick={()=>(setOpenDetail(user.userId))}
+                                        onClick={() =>
+                                            setOpenDetail(user.userId)
+                                        }
                                     >
                                         <td className="px-2 opacity-50">
                                             {page * size + index + 1}
@@ -340,14 +421,12 @@ const UserList = () => {
                                                     {t("table.edit")}
                                                 </button>
 
-                                                <button 
-                                                    
+                                                <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setSelectedUser(user);
                                                         setIsOpenDeleteAlert(
                                                             true,
-                                                            
                                                         );
                                                     }}
                                                     className="bg-gold-accent text-white1 px-2 py-1  rounded"
@@ -369,7 +448,8 @@ const UserList = () => {
                     <span className="font-medium">
                         {rangeStart}–{rangeEnd}
                     </span>{" "}
-                    {t("table.of")} <span className="font-medium">{totalElements}</span>{" "}
+                    {t("table.of")}{" "}
+                    <span className="font-medium">{totalElements}</span>{" "}
                     {t("table.user")}
                 </div>
 
@@ -418,17 +498,15 @@ const UserList = () => {
                 btnColor="bg-gold-accent"
                 btnColorHover="hover:bg-gold-accent/50"
             />
-            
+
             <ProfileDetail
-            title={"Profile Detail"}
-            user={users.find(user=>
-                user.userId === openDetail
-            )}
-            open={openDetail!== null}
-            onClose={()=>setOpenDetail(null)}
-            fetchUser={fetchUsers}
-            isEnable={enable}
-            setEnable={setEnable}
+                title={"Profile Detail"}
+                user={users.find((user) => user.userId === openDetail)}
+                open={openDetail !== null}
+                onClose={() => setOpenDetail(null)}
+                fetchUser={fetchUsers}
+                isEnable={enable}
+                setEnable={setEnable}
             />
         </div>
     );

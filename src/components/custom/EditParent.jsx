@@ -10,8 +10,9 @@ import { OctagonX, CircleAlert } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../../stores/useThemeStore";
 import FormFieldStudent from "./FormFieldStudent";
+import FormFieldParent from "./FormFieldParent";
 
-const EditStudent = ({
+const EditParent = ({
     title,
     user,
     open,
@@ -26,22 +27,19 @@ const EditStudent = ({
     const [openLocal, setOpenlocal] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [sure, setSure] = useState(false);
-    const [student, setStudent] = useState(undefined);
+    const [parent, setParent] = useState(undefined);
 
-    const fetchStudent = async () => {
+    const fetchParent = async () => {
         setLoading(true);
         setError(null);
-        console.log(user?.studentId);
         if (!user) return;
         try {
             const response = await serverRest.get(
-                `/api/v1/students/${user?.studentId}`,
+                `/api/v1/parents/${user?.parentId}`,
             );
             const data = response.data;
-            console.log(data);
-            setStudent(data);
+            setParent(data);
             setCurrentUser(data);
-            console.log(student.studentId)
         } catch (error) {
             console.error(error);
             setError("Failed to load users.");
@@ -56,7 +54,7 @@ const EditStudent = ({
         } else return setSure(true);
     };
     const checkMatchUser = () => {
-        const userJSON = JSON.stringify(student);
+        const userJSON = JSON.stringify(parent);
         const currentUserJSON = JSON.stringify(currentUser);
         // console.log(userJSON);
         // console.log(currentUserJSON);
@@ -69,8 +67,8 @@ const EditStudent = ({
         if (!user) return;
         try {
             const response = await serverRest.put(
-                `/api/v1/students/${user?.studentId}`,
-                student,
+                `/api/v1/parents/${user?.parentId}`,
+                parent,
             );
 
             toast.success("User updated successfully!", {
@@ -92,7 +90,7 @@ const EditStudent = ({
         }
     };
     useEffect(() => {
-        fetchStudent();
+        fetchParent();
     }, [user]);
 
     return open ? (
@@ -118,10 +116,7 @@ const EditStudent = ({
                         <div className="flex relative">
                             <div className="flex gap-2 mb-4 p-4">
                                 <h1 className="font-bold text-4xl">
-                                    {user?.studentFirstNameEn}
-                                </h1>
-                                <h1 className="font-bold text-4xl">
-                                    {user?.studentLastNameEn}
+                                    {user?.fatherNameEn}
                                 </h1>
                             </div>
                             <button
@@ -138,9 +133,9 @@ const EditStudent = ({
                             onSubmit={handleSubmit}
                             className="px-4"
                         >
-                            <FormFieldStudent
-                                setValueStudent={setStudent}
-                                valueStudent={student}
+                            <FormFieldParent
+                                setValueParent={setParent}
+                                valueParent={parent}
                                 isEnable={openEdit}
                             />
                             <button
@@ -173,4 +168,4 @@ const EditStudent = ({
     ) : null;
 };
 
-export default EditStudent;
+export default EditParent;

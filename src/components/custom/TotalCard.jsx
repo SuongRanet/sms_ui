@@ -6,6 +6,7 @@ const TotalCard = ({ title, value, type, icon: Icon }) => {
             "bg-purple-100  text-purple-500 dark:bg-purple-500 dark:text-purple-200",
         student: "bg-sky-100 text-sky-500 dark:bg-sky-500 dark:text-sky-200",
         class: "bg-green-100 text-green-500 dark:bg-green-500  dark:text-green-200",
+        parent: "bg-yellow-100 text-yellow-500 dark:bg-yellow-500 dark:text-yellow-200",
     };
 
     return (

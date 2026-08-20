@@ -2,6 +2,7 @@
     "dashboard": {
         "title": "ダッシュボード",
         "general": "一般",
+        "enrollment":"登録",
         "home": "ホーム",
         "management": "管理",
         "teacher": "教師",

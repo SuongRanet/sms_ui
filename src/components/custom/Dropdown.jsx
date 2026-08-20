@@ -23,6 +23,7 @@ const Dropdown = ({ onClose }) => {
             console.log("Logout successful:", response.data);
 
             Cookies.remove("accessToken");
+            localStorage.removeItem("leva-store");
             logout();
             navigate("/");
         } catch (error) {

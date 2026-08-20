@@ -2,6 +2,7 @@
     "dashboard": {
         "title": "Dashboard",
         "general": "General",
+        "enrollment":"Enrollment",
         "home": "Home",
         "management": "management",
         "teacher": "Teacher",

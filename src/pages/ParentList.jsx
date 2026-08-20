@@ -8,15 +8,9 @@ import { Trash2, TriangleAlert, OctagonX } from "lucide-react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useThemeStore from "../stores/useThemeStore";
 import { useTranslation } from "react-i18next";
-import EditStudent from "../components/custom/EditStudent";
+import EditParent from "../components/custom/EditParent";
 
 // Avatar backgrounds built from your theme tokens (rotates for variety)
-const ROLE_AVATAR_STYLES = {
-    ADMIN: "bg-gold-accent",
-    TEACHER: "bg-primary-blue",
-    STUDENT: "bg-emerald-500",
-    PARENT: "bg-violet-500",
-};
 const AVATAR_STYLES = [
     "bg-primary-blue",
     "bg-gold-accent",
@@ -25,13 +19,6 @@ const AVATAR_STYLES = [
     "bg-cyan-500",
     "bg-orange-500",
 ];
-
-const ROLE_STYLES = {
-    ADMIN: "bg-amber-100 text-amber-800 border border-amber-300",
-    TEACHER: "bg-blue-100 text-blue-800 border border-blue-300",
-    STUDENT: "bg-green-100 text-green-800 border border-green-300",
-    PARENT: "bg-purple-100 text-purple-800 border border-purple-300",
-};
 
 function getInitials(firstName, lastName) {
     const f = firstName?.[0] ?? "";
@@ -42,10 +29,6 @@ function getInitials(firstName, lastName) {
 function getAvatarStyle(seed = "", roles = []) {
     const roleName = roles?.[0]?.roleName;
 
-    if (ROLE_AVATAR_STYLES[roleName]) {
-        return ROLE_AVATAR_STYLES[roleName];
-    }
-
     let hash = 0;
 
     for (let i = 0; i < seed.length; i++) {
@@ -55,7 +38,7 @@ function getAvatarStyle(seed = "", roles = []) {
     return AVATAR_STYLES[Math.abs(hash) % AVATAR_STYLES.length];
 }
 
-const Studentlist = () => {
+const Parentlist = () => {
     const [enable, setEnable] = useState(false);
     const [openDetail, setOpenDetail] = useState(null);
     const [users, setUsers] = useState([]);
@@ -93,24 +76,20 @@ const Studentlist = () => {
         setError(null);
 
         try {
-            const response = await serverRest.post(`/api/v1/students/search`, {
+            const response = await serverRest.post(`/api/v1/parents/search`, {
                 keyword: keyword,
                 province: "",
-                gender: "",
-                fullNameKh: "",
-                gradeLevel: "",
-                classId: "",
-                enrolledFrom: "",
-                enrolledTo: "",
-
-                page: page,
-                size: size,
-
+                mother_name_en: "",
+                father_name_en: "",
+                page: 0,
+                size: 10,
                 sortBy: "id",
                 direction: "asc",
             });
             const data = response;
             console.log(data.data.data);
+            console.log(users.parentId);
+            
             setUsers(data.data.data || []);
             setTotalElements(data.data.total || 0);
             setTotalPages(
@@ -264,26 +243,26 @@ const Studentlist = () => {
                             !error &&
                             users.map((user, index) => {
                                 const fullName =
-                                    `${user.studentFirstNameEn ?? ""} ${user.studentLastNameEn ?? ""}`.trim() ||
+                                    `${user.fatherNameEn ?? ""} ${user.lastNameEn ?? ""}`.trim() ||
                                     "Unknown";
                                 const initials = getInitials(
-                                    user.studentFirstNameEn,
-                                    user.studentLastNameEn,
+                                    user.fatherNameEn,
+                                    user.lastNameEn,
                                 );
                                 const avatarStyle = getAvatarStyle(
-                                    user.studentId?.toString() ?? fullName,
+                                    user.parentId?.toString() ?? fullName,
                                 );
 
                                 return (
                                     <tr
-                                        key={user.studentId}
+                                        key={user.parentId}
                                         className="bg-white1 border-t border-gray-bg hover:bg-light-blue/40"
                                         onClick={() =>
-                                            setOpenDetail(user.studentId)
+                                            setOpenDetail(user.parentId)
                                         }
                                     >
                                         <td className="px-2 opacity-50">
-                                            {user.studentId}
+                                            {user.parentId}
                                         </td>
 
                                         <td className="px-2 py-3">
@@ -298,8 +277,8 @@ const Studentlist = () => {
                                                         {fullName}
                                                     </div>
                                                     <div className="opacity-50 text-xs">
-                                                        {user.studentFirstNameEn}{" "}
-                                                        {user.studentLastNameEn}
+                                                        {user.fatherNameEn}{" "}
+                                                        {user.lastNameEn}
                                                     </div>
                                                 </div>
                                             </div>
@@ -347,7 +326,7 @@ const Studentlist = () => {
                                         </td> */}
 
                                         <td className="px-2 opacity-80">
-                                            {user.enrolledDate}
+                                            {user.hiredDate}
                                         </td>
 
                                         <td className="px-2 py-3">
@@ -424,9 +403,9 @@ const Studentlist = () => {
                     </button>
                 </div>
             </div>
-            <EditStudent
+            <EditParent
                 title={"Profile Detail"}
-                user={users.find((user) => user.studentId === openDetail)}
+                user={users.find((user) => user.parentId === openDetail)}
                 open={openDetail !== null}
                 onClose={() => setOpenDetail(null)}
                 fetchUser={fetchUsers}
@@ -450,4 +429,4 @@ const Studentlist = () => {
     );
 };
 
-export default Studentlist;
+export default Parentlist;

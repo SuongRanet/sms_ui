@@ -36,7 +36,7 @@ const options = {
 
 const StudentSex = () => {
     return (
-        <div className="bg-white1 p-3 rounded-lg shadow-md flex flex-col gap-4">
+        <div className="bg-white1 p-3 rounded-lg shadow-md w-full flex flex-col gap-4">
             <h1>Student Sex Distribution</h1>
 
             <div className="h-64 w-full flex items-center justify-center">
